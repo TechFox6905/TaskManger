@@ -116,5 +116,5 @@ def main():
         else:
             print("Invalid Input. Please try again")
             
-        
-main()
+if __name__ == '__main__':        
+    main()
