@@ -70,7 +70,9 @@ menu -
 9.exit
 '''
 def main():
-    menu=['add task','update task','delete task','list all task','list completed','list pending','save tasks to file','load task from file','exit']
+    manager = TaskManager()
+    menu=['add task','update task','delete task','list all task','list completed','list pending',
+    'save tasks to file','load task from file','exit']
     while True:
         print("Menu")
         
@@ -79,23 +81,38 @@ def main():
             print(str(j)+"."+str(i))
         x=input("Enter your choice ")
         if x==menu[0]:
-             #add task
+             add_task(manager)
+
         elif x==menu[1]:
-            #update task
+            update_task(manager)
+
         elif x==menu[2]:
-            #delete task
+            delete_task(manager)
+
         elif x==menu[3]:
-            #list all task
+            list_all_tasks(manager)
+
         elif x==menu[4]:
             #list completed
+            list_status_tasks(manager, completed= True)
+
         elif x==menu[5]:
             #list pending
+            list_status_tasks(manager, completed= False)
+
         elif x==menu[6]:
             #save tasks to file
+            filename = input("Enter filename to save tasks: ")
+
         elif x==menu[7]:
             #load task from file
+            filename = input("Enter filename to load tasks: ")
+
         elif x==menu[8]:
             break
+
+        else:
+            print("Invalid Input. Please try again")
             
         
 main()
