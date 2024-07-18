@@ -11,14 +11,15 @@ class Task:
     def __init__(self, title, description, priority, category):
         self.title = title
         self.description = description
+        priority = priority.title()
         self.priority = priority
         self.category = category
         self.completed = False
 
-    def completed(self):
+    def mark_completed(self):
         self.completed = True
 
-    def incompleted(self):
+    def mark_incompleted(self):
         self.completed = False
 
 
@@ -50,6 +51,12 @@ class TaskManager:
             return list(filter(filter_func, self.tasks))
         return self.tasks
 
+    def mark_task_complete(self, index):
+        self.tasks[index].mark_completed()
+
+    def mark_task_incomplete(self, index):
+        self.tasks[index].mark_incomplete()
+
     #File I/O FUNCTION
     '''Save and load tasks to and form file
     file type - JSON
@@ -78,6 +85,9 @@ class TaskManager:
                     Task(task['title'], task['description'], task['priority'], task['category'])
                     for task in tasks_data
                 ]
+                for task, task_data in zip(self.tasks, tasks_data):
+                    if task_data['completed']:
+                        task.mark_completed()
         except FileNotFoundError:
             print("File not found")
 
@@ -86,25 +96,47 @@ class TaskManager:
 def add_task(manager):
     title = input("Enter task title: ")
     description = input("Enter task description: ")
-    priority = input("Enter task priority (High, Medium, Low): ")
+    while True:
+        priority = input("Enter task priority (High, Medium, Low): ")
+        priority = priority.title()
+        if priority in ['High', 'Medium', 'Low']:
+            break
+        else:
+            print("Enter valid input like High, Medium, Low")
     category = input("Enter task category: ")
     task = Task(title, description, priority, category)
     manager.add_task(task)
     print("Task added successfully")
 
 def update_task(manager):
-    index = int(input("Enter task index to update: "))
+    while True:
+        try:
+            index = int(input("Enter task index to update: "))
+            break
+        except ValueError:
+            print("Enter Integer number")
     index -= 1
     title = input("Enter new task title: ")
     description = input("Enter new task description: ")
-    priority = input("Enter new task priority (High, Medium, Low): ")
+    while True:
+        priority = input("Enter task priority (High, Medium, Low): ")
+        priority = priority.title()
+        if priority in ['High', 'Medium', 'Low']:
+            break
+        else:
+            print("Enter valid input like High, Medium, Low")
     category = input("Enter new task category: ")
     task = Task(title, description, priority, category)
     manager.update_task(index, task)
     print("Task updated successfully")
 
 def delete_task(manager):
-    index = int(input("Enter task index to delete: "))
+    while True:
+        try:
+            index = int(input("Enter task index to delete: "))
+            break
+        except ValueError:
+            print("Enter Integer number")
     index -= 1
     manager.delete_task(index)
     print("Task deleted successfully")
@@ -140,14 +172,13 @@ menu -
 '''
 def main():
     manager = TaskManager()
-    menu=['add task','update task','delete task','list all task','list completed','list pending',
+    menu=['add task','update task','delete task','list all task','list completed','list pending', 'mark complete tasks',
     'save tasks to file','load task from file','exit']
     while True:
         print("\n*******************************************************************")
         print("Menu")
 
-        for i,j in zip(menu,(0,1,2,3,4,5,6,7,8,9)):
-            j += 1
+        for i,j in zip(menu,(1,2,3,4,5,6,7,8,9,10)):
             print(str(j)+"."+str(i))
         while True:
             try:
@@ -159,10 +190,20 @@ def main():
              add_task(manager)
 
         elif x == 2:
-            update_task(manager)
+            while True:
+                try:
+                    update_task(manager)
+                    break
+                except IndexError:
+                    print("List assignment index out of range")
 
         elif x == 3:
-            delete_task(manager)
+            while True:
+                try:
+                    delete_task(manager)
+                    break
+                except IndexError:
+                    print("List assignment index out of range")
 
         elif x == 4:
             list_all_tasks(manager)
@@ -176,15 +217,29 @@ def main():
             list_status_tasks(manager, completed= False)
 
         elif x == 7:
+
+            while True:
+                try:
+                    index = int(input("Enter task index to mark complete: "))
+                    if index < 1 or index > len(manager.tasks):
+                        raise IndexError
+                    manager.mark_task_complete(index - 1)
+                    break
+                except ValueError:
+                    print("Enter Integer number")
+                except IndexError:
+                    print("List assignment index out of range")
+
+        elif x == 8:
             #save tasks to file
             filename = input("Enter filename to save tasks: ")
             manager.save_to_file(filename)
 
-        elif x == 8:
+        elif x == 9:
             #load task from file
             filename = input("Enter filename to load tasks: ")
             manager.read_from_file(filename)
-        elif x == 9:
+        elif x == 10:
             break
 
         else:
