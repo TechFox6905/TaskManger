@@ -25,7 +25,7 @@ class Task:
 #Task Manager Class
 '''Manages a list of task with features
 function of each -
-1)add task 
+1)add task
 2)delete task
 3)update task
 4)list all task
@@ -35,25 +35,25 @@ function of each -
 class TaskManager:
     def __init__(self):
         self.tasks = []
-    
+
     def add_task(self, task):
         self.tasks.append(task)
-    
+
     def update_task(self, index, task):
         self.tasks[index] = task
-    
+
     def delete_task(self,index):
         self.tasks.pop(index)
-    
+
     def list_tasks(self, filter_func =  None):
         if filter_func is not None:
             return list(filter(filter_func, self.tasks))
         return self.tasks
-    
+
     #File I/O FUNCTION
     '''Save and load tasks to and form file
     file type - JSON
-    save file function 
+    save file function
     load file function
     '''
     def save_to_file(self, filename):
@@ -80,7 +80,7 @@ class TaskManager:
                 ]
         except FileNotFoundError:
             print("File not found")
-    
+
 #User Interface Function with features
 '''add features'''
 def add_task(manager):
@@ -94,6 +94,7 @@ def add_task(manager):
 
 def update_task(manager):
     index = int(input("Enter task index to update: "))
+    index -= 1
     title = input("Enter new task title: ")
     description = input("Enter new task description: ")
     priority = input("Enter new task priority (High, Medium, Low): ")
@@ -104,22 +105,29 @@ def update_task(manager):
 
 def delete_task(manager):
     index = int(input("Enter task index to delete: "))
+    index -= 1
     manager.delete_task(index)
     print("Task deleted successfully")
 
 def list_all_tasks(manager):
     tasks = manager.list_tasks()
-    for i, task in enumerate(tasks):
+    for i, task in enumerate(tasks, start = 1):
         print(f"{i}: {task.title} - {task.description} - {task.priority} - {task.category} - {'Completed' if task.completed else 'Pending'} ")
+
+    if len(tasks) == 0:
+        print("There are no Tasks")
 
 def list_status_tasks(manager, completed= True):
     tasks = manager.list_tasks(lambda t: t.completed == completed)
-    for i, task in enumerate(tasks):
+    for i, task in enumerate(tasks, start = 1):
         print(f"{i}: {task.title} - {task.description} - {task.priority} - {task.category} - {'Completed' if task.completed else 'Pending'} ")
+
+    if len(tasks) == 0:
+        print("There are no Tasks")
 
 #MAIN FUNCTION
 '''Display menu for user interaction
-menu - 
+menu -
 1.add task
 2.update task
 3.delete task
@@ -135,46 +143,52 @@ def main():
     menu=['add task','update task','delete task','list all task','list completed','list pending',
     'save tasks to file','load task from file','exit']
     while True:
+        print("\n*******************************************************************")
         print("Menu")
-        
+
         for i,j in zip(menu,(0,1,2,3,4,5,6,7,8,9)):
-            j+=1
+            j += 1
             print(str(j)+"."+str(i))
-        x=input("Enter your choice ")
-        if x==menu[0]:
+        while True:
+            try:
+                x = int(input("Enter your choice number"))
+                break
+            except ValueError:
+                print("Enter number from the option: ")
+        if x == 1:
              add_task(manager)
 
-        elif x==menu[1]:
+        elif x == 2:
             update_task(manager)
 
-        elif x==menu[2]:
+        elif x == 3:
             delete_task(manager)
 
-        elif x==menu[3]:
+        elif x == 4:
             list_all_tasks(manager)
 
-        elif x==menu[4]:
+        elif x == 5:
             #list completed
             list_status_tasks(manager, completed= True)
 
-        elif x==menu[5]:
+        elif x == 6:
             #list pending
             list_status_tasks(manager, completed= False)
 
-        elif x==menu[6]:
+        elif x == 7:
             #save tasks to file
             filename = input("Enter filename to save tasks: ")
             manager.save_to_file(filename)
 
-        elif x==menu[7]:
+        elif x == 8:
             #load task from file
             filename = input("Enter filename to load tasks: ")
             manager.read_from_file(filename)
-        elif x==menu[8]:
+        elif x == 9:
             break
 
         else:
             print("Invalid Input. Please try again")
-            
-if __name__ == '__main__':        
+
+if __name__ == '__main__':
     main()
