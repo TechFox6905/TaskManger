@@ -50,6 +50,12 @@ class TaskManager:
             return list(filter(filter_func, self.tasks))
         return self.tasks
     
+    #File I/O FUNCTION
+    '''Save and load tasks to and form file
+    file type - JSON
+    save file function 
+    load file function
+    '''
     def save_to_file(task, filename):
         with open(filename, 'a') as file:
             json.dump(task, file,)
@@ -62,18 +68,39 @@ class TaskManager:
     
 #User Interface Function with features
 '''add features'''
+def add_task(manager):
+    title = input("Enter task title: ")
+    description = input("Enter task description: ")
+    priority = input("Enter task priority (High, Medium, Low): ")
+    category = input("Enter task category: ")
+    task = Task(title, description, priority, category)
+    manager.add_task(task)
+    print("Task added successfully")
 
-#File I/O FUNCTION
-'''Save and load tasks to and form file
-file type - JSON
-save file function 
-load file function
-'''
+def update_task(manager):
+    index = int(input("Enter task index to update: "))
+    title = input("Enter new task title: ")
+    description = input("Enter new task description: ")
+    priority = input("Enter new task priority (High, Medium, Low): ")
+    category = input("Enter new task category: ")
+    task = Task(title, description, priority, category)
+    manager.update_task(index, task)
+    print("Task updated successfully")
 
+def delete_task(manager):
+    index = int(input("Enter task index to delete: "))
+    manager.delete_task(index)
+    print("Task deleted successfully")
 
-    
+def list_all_tasks(manager):
+    tasks = manager.list_tasks()
+    for i, task in enumerate(tasks):
+        print(f"{i}: {task.title} - {task.description} - {task.priority} - {task.category} - {'Completed' if task.completed else 'Pending'} ")
 
-
+def list_status_tasks(manager, completed= True):
+    tasks = manager.list_tasks(lambda t: t.completed == completed)
+    for i, task in enumerate(tasks):
+        print(f"{i}: {task.title} - {task.description} - {task.priority} - {task.category} - {'Completed' if task.completed else 'Pending'} ")
 
 #MAIN FUNCTION
 '''Display menu for user interaction
@@ -122,7 +149,7 @@ def main():
         elif x==menu[6]:
             #save tasks to file
             filename = input("Enter filename to save tasks: ")
-            manager.save_to_file(,filename)
+            manager.save_to_file(filename)
 
         elif x==menu[7]:
             #load task from file
