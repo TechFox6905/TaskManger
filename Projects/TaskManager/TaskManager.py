@@ -70,11 +70,6 @@ save file function
 load file function
 '''
 
-
-    
-
-
-
 #MAIN FUNCTION
 '''Display menu for user interaction
 menu - 
