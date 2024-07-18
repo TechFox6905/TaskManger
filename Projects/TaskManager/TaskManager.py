@@ -56,15 +56,30 @@ class TaskManager:
     save file function 
     load file function
     '''
-    def save_to_file(task, filename):
-        with open(filename, 'a') as file:
-            json.dump(task, file,)
+    def save_to_file(self, filename):
+        tasks_data = [
+            {
+                'title': task.title,
+                'description': task.description,
+                'priority': task.priority,
+                'category': task.category,
+                'completed': task.completed
+            } for task in self.tasks
+        ]
+        with open(filename, 'w') as file:
+            json.dump(tasks_data, file)
 
 
-    def read_from_file(filename):
-        with open(filename, 'r') as file:
-            task = json.load(file)
-            return task
+    def read_from_file(self, filename):
+        try:
+            with open(filename, 'r') as file:
+                tasks_data = json.load(file)
+                self.tasks = [
+                    Task(task['title'], task['description'], task['priority'], task['category'])
+                    for task in tasks_data
+                ]
+        except FileNotFoundError:
+            print("File not found")
     
 #User Interface Function with features
 '''add features'''
