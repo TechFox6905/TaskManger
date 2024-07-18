@@ -1,3 +1,4 @@
+import json
 #Task Class
 '''Defines the sturcture and behavior of task
 Task's Properties-
@@ -48,7 +49,17 @@ class TaskManager:
         if filter_func is not None:
             return list(filter(filter_func, self.tasks))
         return self.tasks
+    
+    def save_to_file(task, filename):
+        with open(filename, 'a') as file:
+            json.dump(task, file,)
 
+
+    def read_from_file(filename):
+        with open(filename, 'r') as file:
+            task = json.load(file)
+            return task
+    
 #User Interface Function with features
 '''add features'''
 
@@ -58,6 +69,12 @@ file type - JSON
 save file function 
 load file function
 '''
+
+
+    
+
+
+
 #MAIN FUNCTION
 '''Display menu for user interaction
 menu - 
@@ -105,11 +122,12 @@ def main():
         elif x==menu[6]:
             #save tasks to file
             filename = input("Enter filename to save tasks: ")
+            manager.save_to_file(,filename)
 
         elif x==menu[7]:
             #load task from file
             filename = input("Enter filename to load tasks: ")
-
+            manager.read_from_file(filename)
         elif x==menu[8]:
             break
 
